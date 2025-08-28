@@ -45,27 +45,6 @@ class ValidationStatus(Enum):
     FAILED = "failed"
 
 
-@dataclass
-class EntityExtractionResult:
-    """Result of entity extraction."""
-    company: Optional[str] = None
-    budget: Optional[str] = None
-    deadline: Optional[str] = None
-    
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary."""
-        return {
-            "company": self.company,
-            "budget": self.budget,
-            "deadline": self.deadline
-        }
-    
-    def get_missing_fields(self) -> List[str]:
-        """Get list of missing required fields."""
-        required = ["company", "budget", "deadline"]
-        return [field for field in required if not getattr(self, field)]
-
-
 class DocumentProcessor:
     """Main document processing workflow."""
     
@@ -293,40 +272,55 @@ def main():
     # Example documents
     documents = [
         # Document with all entities
+        # """
+        # Project Proposal: Website Redesign
+        
+        # Company: TechCorp Solutions Inc.
+        # Budget: $75,000 USD
+        # Deadline: March 15, 2025
+        
+        # We are seeking to redesign our corporate website to improve user experience
+        # and increase conversion rates. The project will involve modernizing the design,
+        # improving mobile responsiveness, and integrating new e-commerce features.
+        # """,
+        
+        # # Document with partial entities
+        # """
+        # Marketing Campaign Request
+        
+        # Company: GreenEarth Marketing
+        # Budget: $25,000
+        
+        # We need a comprehensive marketing campaign for our new eco-friendly product line.
+        # The campaign should focus on social media, influencer partnerships, and content marketing.
+        # Please provide a detailed proposal.
+        # """,
+        
+        # # Document with no entities
+        # """
+        # General Inquiry
+        
+        # Hello, I'm interested in learning more about your services.
+        # Could you please send me some information about your pricing
+        # and what you can offer for small businesses?
+        
+        # Thank you for your time.
+        # """,
         """
-        Project Proposal: Website Redesign
-        
-        Company: TechCorp Solutions Inc.
-        Budget: $75,000 USD
-        Deadline: March 15, 2025
-        
-        We are seeking to redesign our corporate website to improve user experience
-        and increase conversion rates. The project will involve modernizing the design,
-        improving mobile responsiveness, and integrating new e-commerce features.
+        Acme needs a campaign with a budget of 10000 and a deadline of 2025-09-01.
         """,
-        
-        # Document with partial entities
         """
-        Marketing Campaign Request
-        
-        Company: GreenEarth Marketing
-        Budget: $25,000
-        
-        We need a comprehensive marketing campaign for our new eco-friendly product line.
-        The campaign should focus on social media, influencer partnerships, and content marketing.
-        Please provide a detailed proposal.
+        Acme needs a campaign with a budget of 10000.
         """,
-        
-        # Document with no entities
         """
-        General Inquiry
-        
-        Hello, I'm interested in learning more about your services.
-        Could you please send me some information about your pricing
-        and what you can offer for small businesses?
-        
-        Thank you for your time.
+        A campaign with a budget of 10000 and a deadline of 2025-09-01.
+        """,
         """
+        A campaign is needed.
+        """,
+        """
+        A campaign with a budget of 10000 and a deadline of 2025-09-01.
+        """,
     ]
     
     # Process each document
